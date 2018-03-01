@@ -65,7 +65,7 @@ hub.Socket  = class
         this.socket    = io(url)
         this.connected = this.socket.connected
 
-        this.socket.on("connect", frappe.log(`Connected to hub.socket with URL: ${this.url}`))
+        this.socket.on("connect", frappe.log.info(`Connected to hub.socket with URL: ${this.url}`))
     }
 }
 
