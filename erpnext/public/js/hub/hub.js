@@ -1,13 +1,13 @@
-frappe.provide('erpnext.hub')
+const hub  = { }
+window.hub = hub
 
-
-erpnext.hub.URL    = 'http://159.89.175.122'
+hub.URL    = 'http://159.89.175.122'
 /**
  * @description Hub Call API
  * Behold, the Hub Call API
  */
-frappe.log         = frappe.Logger.get('erpnext.hub.call')
-erpnext.hub.call   = (method, data, options) =>
+frappe.log = frappe.Logger.get('hub.call')
+hub.call   = (method, data, options) =>
 {
     const DEFAULT  =
     {
@@ -15,7 +15,7 @@ erpnext.hub.call   = (method, data, options) =>
     }
     options        = { ...DEFAULT, ...options }
 
-    const url      = `${erpnext.hub.URL}/api/method/${method}`
+    const url      = `${hub.URL}/api/method/${method}`
     return new Promise(resolve =>
     {
         fetch(url,
@@ -39,11 +39,34 @@ erpnext.hub.call   = (method, data, options) =>
  * @description Hub Search API
  * Behold, the Hub Search API. Powerful like yo grandmama.
  */
-erpnext.hub.search = (query, types, fields) =>
+hub.search = (query, types, fields, filters) =>
 {
-    return new Promise(resolve => 
-        erpnext.hub.call('hub.search'
-    
-        )
+    return hub.call('hub.search',
+        { query: query, types: types, fields: fields, filters: filters }
     )
 }
+
+/**
+ * @description Hub Socket API
+ */
+frappe.log  = frappe.Logger.get("hub.socket")
+hub.Socket  = class
+{
+    constructor (url)
+    {
+        if ( !'io' in window )
+            throw frappe.ImportError("socket.io not imported.")
+
+            
+        this.url       = url || hub.URL
+        
+        frappe.log.info(`Connecting to hub.socket with URL: ${this.url}`)
+
+        this.socket    = io(url)
+        this.connected = this.socket.connected
+
+        this.socket.on("connect", frappe.log(`Connected to hub.socket with URL: ${this.url}`))
+    }
+}
+
+// hub.socket = new hub.Socket()
