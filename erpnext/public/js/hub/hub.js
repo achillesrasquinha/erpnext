@@ -1,7 +1,8 @@
-const hub  = { }
-window.hub = hub
+const hub   = { }
+window.hub  = hub
 
-hub.URL    = 'http://159.89.175.122'
+hub.URL     = 'http://159.89.175.122'
+
 /**
  * @description Hub Call API
  * Behold, the Hub Call API
@@ -38,11 +39,23 @@ hub.call   = (method, data, options) =>
 /**
  * @description Hub Search API
  * Behold, the Hub Search API. Powerful like yo grandmama.
+ * 
+ * {
+ *      "results":
+ *      [
+ *          {
+ *              "doctype": "Hub Item",
+ *              "docname": "TootiFrooti",
+ *                "score": 1
+ *          }
+ *      ]
+ * }
  */
-hub.search = (query, types, fields, filters) =>
+hub.search = (query, types, fields, filters, limit = 10, pagination = 1) =>
 {
     return hub.call('hub.search',
-        { query: query, types: types, fields: fields, filters: filters }
+        { query: query, types: types, fields: fields, filters: filters, limit: limit,
+            pagination: pagination }
     )
 }
 
